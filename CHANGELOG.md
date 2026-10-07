@@ -15,15 +15,18 @@
 - New `overrides.scm` + `[overrides.string]` completion settings.
 - Config: `nbb`, `cljx`, `boot` suffixes; `; ` line comment;
   `kernel_language_names`; `auto_indent_using_last_non_empty_line`.
-- clj-kondo as an optional second language server (`--lsp`), with
-  per-tool download caching (no more cross-tool cache deletion).
+- clj-kondo dropped as a language server: upstream removed its LSP mode
+  after release 2026.05.25, so the server crashed on start; clojure-lsp
+  embeds clj-kondo and covers linting.
+- Binary resolution reworked behind a testable seam: `lsp.<name>.binary.path`
+  → worktree PATH → cached download → latest GitHub release, with unit
+  tests for the order and for cleanup of outdated versions.
 - LSP settings passthrough (`initialization_options`, `settings`) and
   polished completion labels.
 - Formatting recipe: [docs/formatting.md](docs/formatting.md) plus a
   `cljfmt-tonsky` snippet.
 - CI: query checks against all fixtures, clippy with `-D warnings`.
-- Post-review fixes: clj-kondo is opt-in (`opt_in_languages`) so it
-  never starts alongside clojure-lsp by default; nested
+- Post-review fixes: nested
   protocol/record/type method items no longer concatenate the type
   name into their labels; `defmethod` outline handles multi-arity
   bodies and vector dispatch values; `#?@` branch keys highlighted;

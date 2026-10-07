@@ -54,4 +54,50 @@ while read -r query fixture; do
   fi
 done <<<"$sanity"
 
+# Capture pinning: a query can still match something yet silently stop
+# matching a construct it was written for (e.g. a def head dropped from
+# an #any-of? list). Each line names a query, a fixture and a string
+# that MUST appear in that pair's output: a capture name or the quoted
+# text of a captured node.
+pins='brackets.scm outline.clj capture: open,
+highlights.scm syntax_test.cljc capture: punctuation.bracket,
+highlights.scm syntax_test.cljc capture: preproc,
+indents.scm indent.clj capture: indent,
+injections.scm syntax_test.cljc capture: content,
+outline.scm outline.clj capture: item,
+outline.scm outline.clj capture: context.extra,
+outline.scm outline.clj text: `public-fn`
+outline.scm outline.clj text: `private-fn`
+outline.scm outline.clj text: `Shape`
+outline.scm outline.clj text: `render`
+outline.scm outline.clj text: `dispatch`
+overrides.scm edn_sample.edn capture: string,
+runnables.scm outline.clj capture: test_name,
+runnables.scm outline.clj text: `meta-test`
+textobjects.scm outline.clj capture: function.around,
+textobjects.scm outline.clj capture: class.around,
+textobjects.scm outline.clj capture: comment.around,'
+while read -r query fixture pattern; do
+  [ -z "$query" ] && continue
+  out=$(tree-sitter query --lib-path "$lib" --lang-name clojure \
+      "$root/languages/clojure/$query" "$root/test/fixtures/$fixture" 2>/dev/null)
+  ok=0
+  if [[ "$pattern" == capture:* ]]; then
+    # Query output prints captures as `capture: name,` or, when a
+    # pattern repeats a capture, `capture: N - name,`.
+    regex="${pattern/capture: /capture: ([0-9]+ - )?}"
+    grep -Eq -- "$regex" <<<"$out" && ok=1
+  else
+    grep -qF -- "$pattern" <<<"$out" && ok=1
+  fi
+  if [ "$ok" -eq 0 ]; then
+    echo "FAIL: $query no longer matches [$pattern] in $fixture"
+    fail=1
+  else
+    echo "pinned: $query × $fixture [$pattern]"
+  fi
+done <<<"$pins"
+
+exit $fail
+
 exit $fail

@@ -3,32 +3,21 @@
 A [Clojure](https://clojure.org/) extension for [Zed](https://zed.dev):
 tree-sitter syntax that understands `#_`, `(comment …)`, metadata and
 quoting; a rich outline; form-aware text objects; [clojure-lsp] as the
-default language server; [clj-kondo] as an optional lint-only server.
+language server.
 
 [clojure-lsp]: https://clojure-lsp.io
-[clj-kondo]: https://github.com/clj-kondo/clj-kondo
 
-## Language servers
+## Language server
 
-`clojure-lsp` runs by default. clj-kondo's server is opt-in (it lints
-only — no code actions, no formatting) because clojure-lsp already
-embeds clj-kondo and running both duplicates diagnostics. Both binaries
-are resolved in this order:
+`clojure-lsp` runs by default (it embeds clj-kondo, so you get its
+diagnostics; a standalone clj-kondo server is not offered — upstream
+removed its LSP mode after release 2026.05.25). The binary is resolved
+in this order:
 
-1. `lsp.<name>.binary.path` from your Zed settings, if set
-2. `clojure-lsp` / `clj-kondo` found on the worktree's `PATH`
+1. `lsp.clojure-lsp.binary.path` from your Zed settings, if set
+2. `clojure-lsp` found on the worktree's `PATH`
 3. Latest GitHub release, downloaded and cached in the extension's work
    directory
-
-To use clj-kondo instead of clojure-lsp:
-
-```json
-"languages": {
-  "Clojure": {
-    "language_servers": ["clj-kondo", "!clojure-lsp"]
-  }
-}
-```
 
 Per-user server settings pass through to the server (clojure-lsp also
 reads `.lsp/config.edn` from the project root on its own):
@@ -133,4 +122,3 @@ section of the Zed docs. Useful extras:
 4. Hover, then go-to-definition across two files.
 5. Format-on-save on `test/fixtures/indent.clj` (needs a project with
    clojure-lsp and `.cljfmt.edn` — see [docs/formatting.md](docs/formatting.md)).
-6. The clj-kondo-only profile from the settings above.
