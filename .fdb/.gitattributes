@@ -1,0 +1,2 @@
+log/*.log	merge=union
+calendar/*.log	merge=union

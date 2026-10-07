@@ -54,6 +54,7 @@ while read -r query fixture; do
   fi
 done <<<"$sanity"
 
+# @fdb:query-capture-pinning
 # Capture pinning: a query can still match something yet silently stop
 # matching a construct it was written for (e.g. a def head dropped from
 # an #any-of? list). Each line names a query, a fixture and a string

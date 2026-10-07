@@ -261,7 +261,7 @@ impl zed::Extension for ClojureExtension {
 zed::register_extension!(ClojureExtension);
 
 #[cfg(test)]
-mod tests {
+mod tests { // @fdb:lsp-binary-resolution
     use super::*;
     use zed::Extension;
 
