@@ -21,7 +21,7 @@ jobs:
           tree-sitter --version
       - run: script/check-queries.sh
 
-  clippy:
+  rust:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -31,3 +31,4 @@ jobs:
           components: clippy
       - uses: Swatinem/rust-cache@v2
       - run: cargo clippy --target wasm32-wasip2 -- -D warnings
+      - run: cargo test

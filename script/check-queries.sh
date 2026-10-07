@@ -34,4 +34,24 @@ for query in "$root"/languages/clojure/*.scm; do
   echo "ok: $(basename "$query")"
 done
 
+# A query can parse cleanly and still match nothing, so require at
+# least one capture for a designated query × fixture pair.
+sanity='brackets.scm outline.clj
+highlights.scm syntax_test.cljc
+indents.scm indent.clj
+injections.scm syntax_test.cljc
+outline.scm outline.clj
+overrides.scm edn_sample.edn
+runnables.scm outline.clj
+textobjects.scm outline.clj'
+while read -r query fixture; do
+  if [ -z "$(tree-sitter query --lib-path "$lib" --lang-name clojure \
+      "$root/languages/clojure/$query" "$root/test/fixtures/$fixture")" ]; then
+    echo "FAIL: $query matched nothing in $fixture"
+    fail=1
+  else
+    echo "matched: $query × $fixture"
+  fi
+done <<<"$sanity"
+
 exit $fail

@@ -1,5 +1,6 @@
 ;; Scopes where editing behaves differently from plain code; see the
-;; [overrides.*] tables in config.toml.
+;; [overrides.*] tables and bracket not_in in config.toml. Discarded
+;; forms are omitted: they are still ordinary code you edit.
 
 [
   (str_lit)
@@ -7,5 +8,3 @@
 ] @string
 
 (comment) @comment.inclusive
-
-(dis_expr) @comment.inclusive

@@ -22,3 +22,12 @@
 - Formatting recipe: [docs/formatting.md](docs/formatting.md) plus a
   `cljfmt-tonsky` snippet.
 - CI: query checks against all fixtures, clippy with `-D warnings`.
+- Post-review fixes: clj-kondo is opt-in (`opt_in_languages`) so it
+  never starts alongside clojure-lsp by default; nested
+  protocol/record/type method items no longer concatenate the type
+  name into their labels; `defmethod` outline handles multi-arity
+  bodies and vector dispatch values; `#?@` branch keys highlighted;
+  `lsp.<name>.binary.path` settings are honored (with user arguments
+  and env); deftest runnables expose `$ZED_CUSTOM_test_name` without
+  trailing metadata; quote autoclose disabled inside comments; Cargo
+  version synced to 0.3.0.

@@ -101,6 +101,11 @@
     (kwd_name) @label
     (#any-of? @label "clj" "cljs" "cljc" "bb" "default" "nodejs" "lumo" "graalvm" "native")))
 
+(splicing_read_cond_lit
+  (kwd_lit
+    (kwd_name) @label
+    (#any-of? @label "clj" "cljs" "cljc" "bb" "default" "nodejs" "lumo" "graalvm" "native")))
+
 (tagged_or_ctor_lit
   tag: (sym_lit) @tag)
 

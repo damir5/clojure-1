@@ -10,16 +10,17 @@ default language server; [clj-kondo] as an optional lint-only server.
 
 ## Language servers
 
-`clojure-lsp` runs by default. Both binaries are resolved in this order:
+`clojure-lsp` runs by default. clj-kondo's server is opt-in (it lints
+only — no code actions, no formatting) because clojure-lsp already
+embeds clj-kondo and running both duplicates diagnostics. Both binaries
+are resolved in this order:
 
-1. `clojure-lsp` / `clj-kondo` found on the worktree's `PATH`
-2. `lsp.<name>.binary.path` from your Zed settings (applied by Zed itself)
+1. `lsp.<name>.binary.path` from your Zed settings, if set
+2. `clojure-lsp` / `clj-kondo` found on the worktree's `PATH`
 3. Latest GitHub release, downloaded and cached in the extension's work
    directory
 
-For a lighter lint-only setup (no code actions, no formatting), run
-clj-kondo's language server instead — don't run both at once; clojure-lsp
-already embeds clj-kondo and you'd get duplicate diagnostics:
+To use clj-kondo instead of clojure-lsp:
 
 ```json
 "languages": {
@@ -72,10 +73,11 @@ literals (`#inst`, `#uuid`), var-quote and deref.
 ## Outline
 
 `ns`, `def`, `defonce`, `declare`, `defn`, `defn-` (tagged private),
-`defmacro`, `defmulti`, `defmethod` (multi name + dispatch value),
-`deftest`, `defprotocol`, `defrecord`, `deftype`, `definterface`,
-`s/def`, `s/fdef`, `m/=>`, method signatures nested in protocol/record
-and type forms, and top-level `(comment …)` blocks.
+`defmacro`, `defmulti`, `defmethod` (name + dispatch value, multi-arity
+bodies included), `deftest` (metadata excluded from the label),
+`defprotocol`, `defrecord`, `deftype`, `definterface`, `s/def`, `s/fdef`,
+`m/=>`, method signatures nested in protocol/record/interface forms, and
+top-level `(comment …)` blocks.
 
 ## Text objects (Vim mode)
 
@@ -87,8 +89,9 @@ structural editing is not possible from an extension.
 
 ## Running tests
 
-`deftest` forms get a ▶ in the gutter (tag `clojure-test`, symbol
-exposed as `ZED_CUSTOM_TEST_NAME`). Wire it to a task template in your
+`deftest` forms get a ▶ in the gutter (tag `clojure-test`; the name is
+exposed as `$ZED_CUSTOM_test_name`, and `$ZED_RUNNABLE_SYMBOL` is set
+when spawned from the gutter). Wire it to a task template in your
 settings, e.g. for Kaocha:
 
 ```json
@@ -96,7 +99,7 @@ settings, e.g. for Kaocha:
   "templates": [
     {
       "label": "clojure: run test",
-      "command": "clojure -M:test -v $ZED_CUSTOM_TEST_NAME",
+      "command": "clojure -M:test -v $ZED_CUSTOM_test_name",
       "tags": ["clojure-test"]
     }
   ]

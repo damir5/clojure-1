@@ -23,6 +23,13 @@
 
 (defmulti area :shape)
 
+(defmethod area :multi-arity
+  ([s] s)
+  ([s _] s))
+
+(deftest ^:integration meta-test
+  (is true))
+
 (defprotocol Shape
   (area [shape] "Area of the shape.")
   (perimeter [shape]))

@@ -13,6 +13,7 @@ language = "Clojure"
 [language_servers.clj-kondo]
 name = "clj-kondo"
 language = "Clojure"
+opt_in_languages = ["Clojure"]
 
 [grammars.clojure]
 repository = "https://github.com/sogaiu/tree-sitter-clojure"

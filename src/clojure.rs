@@ -137,7 +137,7 @@ impl zed::Extension for ClojureExtension {
         language_server_id: &LanguageServerId,
         worktree: &zed::Worktree,
     ) -> Result<zed::Command> {
-        let (tool, args) = match language_server_id.as_ref() {
+        let (tool, mut args) = match language_server_id.as_ref() {
             "clojure-lsp" => (
                 ToolSpec {
                     repo: "clojure-lsp/clojure-lsp",
@@ -156,6 +156,23 @@ impl zed::Extension for ClojureExtension {
             ),
             id => return Err(format!("unsupported language server: {id}")),
         };
+
+        // An explicitly configured binary wins over PATH and downloads.
+        // The tool's own args (e.g. clj-kondo's --lsp) stay in front.
+        if let Some(binary) =
+            zed::settings::LspSettings::for_worktree(language_server_id.as_ref(), worktree)?
+                .binary
+        {
+            if let Some(path) = binary.path {
+                args.extend(binary.arguments.unwrap_or_default());
+                return Ok(zed::Command {
+                    command: path,
+                    args,
+                    env: binary.env.unwrap_or_default().into_iter().collect(),
+                });
+            }
+        }
+
         Ok(zed::Command {
             command: self.language_server_binary_path(language_server_id, worktree, tool)?,
             args,
