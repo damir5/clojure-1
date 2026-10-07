@@ -1,7 +1,7 @@
 id = "clojure"
 name = "Clojure"
 description = "Clojure support."
-version = "0.2.2"
+version = "0.3.0"
 schema_version = 1
 authors = ["Paulo Roberto de Oliveira Castro <p.oliveira.castro@gmail.com>"]
 repository = "https://github.com/zed-extensions/clojure"
@@ -10,6 +10,10 @@ repository = "https://github.com/zed-extensions/clojure"
 name = "clojure-lsp"
 language = "Clojure"
 
+[language_servers.clj-kondo]
+name = "clj-kondo"
+language = "Clojure"
+
 [grammars.clojure]
-repository = "https://github.com/prcastro/tree-sitter-clojure"
-commit = "38b4f8d264248b2fd09575fbce66f7c22e8929d5"
+repository = "https://github.com/sogaiu/tree-sitter-clojure"
+commit = "e43eff80d17cf34852dcd92ca5e6986d23a7040f"
